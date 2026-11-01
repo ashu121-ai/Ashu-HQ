@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0C1222">
+<title>Ashu HQ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: phone-first command centre. Sticky header, one view at a time, bottom tab bar. Marigold marks action, teal marks progress. */
+:root{
+  --bg:#EDF0F5; --surface:#FFFFFF; --surface2:#E3E8F0; --ink:#121A2F; --muted:#5B667D; --line:#D3DAE6;
+  --accent:#E8A200; --on-accent:#1A1300; --accent-soft:#FCEFC8;
+  --teal:#0E7C74; --teal-soft:#D7F0ED;
+  --danger:#C92C45; --danger-soft:#FBE0E4; --ok:#1B8A4C; --ok-soft:#D9F2E3; --warn:#B26A00;
+  --f-display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --f-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --glow:var(--teal);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1222; --surface:#141C32; --surface2:#1C2640; --ink:#E9EEF9; --muted:#93A0BC; --line:#26324F;
+  --accent:#F5B82E; --on-accent:#1A1300; --accent-soft:#2D2610;
+  --teal:#34C5B8; --teal-soft:#12302F;
+  --danger:#FF6B81; --danger-soft:#3A1722; --ok:#46D17F; --ok-soft:#12301F; --warn:#F2A93B;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0C1222; --surface:#141C32; --surface2:#1C2640; --ink:#E9EEF9; --muted:#93A0BC; --line:#26324F;
+  --accent:#F5B82E; --on-accent:#1A1300; --accent-soft:#2D2610;
+  --teal:#34C5B8; --teal-soft:#12302F;
+  --danger:#FF6B81; --danger-soft:#3A1722; --ok:#46D17F; --ok-soft:#12301F; --warn:#F2A93B;
+  color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+h1,h2,h3,p{margin:0}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ic{flex:none}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em}
+.brand b{background:var(--accent);color:var(--on-accent);font-size:13px;letter-spacing:.06em;padding:3px 8px;border-radius:7px;font-weight:800}
+.runchip{display:flex;align-items:center;gap:8px;max-width:58%;background:var(--teal-soft);color:var(--teal);border:1px solid var(--teal);border-radius:99px;padding:5px 12px;font-weight:700;font-size:12.5px}
+.runchip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.runchip i{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pulse 1.4s infinite;flex:none}
+
+main{padding-block:18px 110px;min-height:70vh}
+.view{display:flex;flex-direction:column;gap:14px}
+.h1{font-family:var(--f-display);font-weight:800;font-size:28px;line-height:1.1;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--muted)}
+.sec{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grow{flex:1;min-width:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat small{font-size:11.5px;color:var(--muted);font-weight:500}
+.stat strong{font-family:var(--f-display);font-size:22px;font-weight:800;letter-spacing:-.01em}
+.stat em{font-style:normal;font-size:12px;color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14px;padding:11px 16px;border-radius:12px;border:1px solid transparent;background:var(--accent);color:var(--on-accent);text-decoration:none;line-height:1.2;text-align:center}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:10px}
+.btn.big{padding:16px 22px;font-size:17px;border-radius:16px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.iconbtn{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);flex:none}
+.iconbtn.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.iconbtn.warn{color:var(--danger)}
+input,select{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;width:100%}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted);min-width:0}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form .full{grid-column:1/-1}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.run{background:var(--teal-soft);color:var(--teal)}
+.pill.bad{background:var(--danger-soft);color:var(--danger)}
+.pill.warn{background:var(--accent-soft);color:var(--warn)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:700;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* tab bar */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding-block:6px}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:700;padding:6px 2px;border-radius:10px}
+.tab[aria-current="page"]{color:var(--ink);background:var(--accent-soft)}
+.tab[aria-current="page"] .ic{color:var(--warn)}
+
+/* home */
+.shayari{background:var(--accent-soft);border-color:transparent;display:flex;flex-direction:column;gap:10px;padding:18px}
+.shayari .lines{display:flex;flex-direction:column;gap:4px;font-family:var(--f-display);font-weight:600;font-size:20px;line-height:1.3;text-wrap:balance}
+.shayari small{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--warn)}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.quick button{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;font-weight:700;font-size:13px}
+.quick .ic{color:var(--teal)}
+
+/* tasks */
+.sumrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.bars{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.brow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:500}
+.brow .val{font-size:12px;color:var(--muted)}
+.bar{grid-column:1/-1;height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--teal);border-radius:99px;transition:width .4s}
+.bar i.over{background:var(--danger)}
+.bar i.done{background:var(--ok)}
+.tlist{display:flex;flex-direction:column;gap:10px;list-style:none;padding:0;margin:0}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.task.isdone .tt{text-decoration:line-through;color:var(--muted)}
+.chk{width:28px;height:28px;border-radius:9px;border:2px solid var(--line);background:transparent;display:grid;place-items:center;color:#fff;padding:0}
+.chk.on{background:var(--ok);border-color:var(--ok)}
+.tt{font-weight:700;overflow-wrap:anywhere}
+.tm{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted);margin-top:3px}
+.tcl{font-family:var(--f-mono);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.tact{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.tact .r{display:flex;gap:6px}
+.empty{color:var(--muted);text-align:center;padding:18px}
+
+/* alarm */
+.alarm{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.alarm .at{font-family:var(--f-mono);font-weight:700;font-size:26px;line-height:1.1}
+.sw{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);position:relative;padding:0;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:transform .2s}
+.sw:checked{background:var(--teal);border-color:var(--teal)}
+.sw:checked::after{transform:translateX(18px);background:#fff}
+.note{font-size:12.5px;color:var(--muted);background:var(--surface2);border-radius:12px;padding:10px 12px}
+.ring{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px max(24px,env(safe-area-inset-right,0px)) 24px max(24px,env(safe-area-inset-left,0px))}
+.ring .rt{font-family:var(--f-mono);font-weight:700;font-size:68px;line-height:1;animation:shake .6s infinite}
+.ring .rl{font-family:var(--f-display);font-weight:800;font-size:24px}
+.ring .rm{min-height:20px;font-weight:700;color:var(--danger)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* mentors */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface2);padding:4px;border-radius:14px}
+.seg button{border:0;background:transparent;border-radius:11px;padding:9px 6px;font-weight:700;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.seg button small{font-weight:500;color:var(--muted);font-size:11.5px}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 0 var(--line)}
+.stagebox{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px 8px}
+.stage{position:relative;width:128px;height:148px;flex:none}
+.stage::before{content:"";position:absolute;inset:6px 2px 0;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--glow) 34%,transparent),transparent);transition:background .4s}
+.stage[data-mood="angry"]{--glow:var(--danger)}
+.stage[data-mood="happy"],.stage[data-mood="excited"]{--glow:var(--accent)}
+.stage[data-mood="sad"]{--glow:#4C8DFF}
+.stage[data-mood="thinking"]{--glow:var(--muted)}
+.av{position:relative;width:100%;height:100%;animation:bob 4s ease-in-out infinite}
+.av svg{width:100%;height:100%;display:block}
+.eyes{animation:blink 5s infinite;transform-origin:100px 98px}
+.talking .mouth{animation:talk .24s ease-in-out infinite alternate;transform-origin:100px 138px}
+.mood{position:absolute;right:-4px;bottom:10px;font-size:30px;line-height:1}
+.mood.pop{animation:pop .4s}
+.who{display:flex;flex-direction:column;gap:6px;min-width:0}
+.who h2{font-family:var(--f-display);font-size:20px;font-weight:800}
+.who p{color:var(--muted);font-size:13px}
+.log{display:flex;flex-direction:column;gap:10px;min-height:120px}
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:100%}
+.msg .b{padding:10px 13px;border-radius:16px;overflow-wrap:anywhere;white-space:pre-wrap;max-width:84%}
+.msg.a .b{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.u{justify-content:flex-end}
+.msg.u .b{background:var(--ink);color:var(--bg);border-bottom-right-radius:5px}
+.msg .me{font-size:20px;line-height:1;flex:none}
+.msg .say{width:30px;height:30px;border-radius:9px;color:var(--muted)}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:pulse 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+.composer{display:flex;gap:8px;align-items:center}
+.composer .iconbtn{background:var(--accent);border-color:var(--accent);color:var(--on-accent);width:44px;height:44px;border-radius:12px}
+
+/* zen */
+.breath-wrap{display:grid;place-items:center;height:250px;position:relative}
+.breath{width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--teal) 70%,#fff),var(--teal));transform:scale(.6);transition-property:transform;transition-timing-function:ease-in-out;opacity:.92}
+.btext{position:absolute;font-family:var(--f-display);font-weight:800;font-size:22px;color:var(--ink);text-align:center;pointer-events:none}
+.btext small{display:block;font-family:var(--f-mono);font-size:14px;font-weight:500;color:var(--muted)}
+.menu{display:flex;flex-direction:column;gap:10px}
+.mrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;width:100%}
+.mrow .mi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal)}
+.mrow strong{display:block;font-size:15px}
+.mrow span{color:var(--muted);font-size:13px}
+.backrow{display:flex;align-items:center;gap:8px}
+.ringbox{display:flex;align-items:center;gap:16px}
+.src{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px;text-decoration:none;color:var(--ink)}
+.src strong{display:block}
+.src span{color:var(--muted);font-size:13px}
+.topic{padding:12px 0;border-top:1px solid var(--line)}
+.topic:first-child{border-top:0}
+.topic strong{display:block}
+.topic span{color:var(--muted);font-size:13px}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;font-size:13px;max-width:min(92vw,420px);text-align:center}
+
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+@keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(1.45)}}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hdr"><div class="wrap">
+  <div class="brand">Ashu <b>HQ</b></div>
+  <button class="runchip" id="runChip" data-go="tasks" hidden aria-label="Chalta hua timer"><i></i><span id="runName"></span><span class="mono" id="runTime"></span></button>
+</div></header>
+
+<main class="wrap">
+  <section id="v-home" class="view">
+    <div><h1 class="h1" id="hGreet"></h1><p class="sub" id="hDate"></p></div>
+    <div class="grid2" id="hStats"></div>
+    <div class="sec">Aaj ka dose</div>
+    <div class="card shayari" id="hShayari"></div>
+    <div class="row"><button class="btn ghost sm" id="shNext">Agli</button><button class="btn ghost sm" id="shNew">Anvi se nayi likhwao</button></div>
+    <div class="sec">Seedha jao</div>
+    <div class="quick" id="hQuick"></div>
+  </section>
+
+  <section id="v-tasks" class="view" hidden>
+    <h1 class="h1">Aaj ka plan</h1>
+    <div class="card" id="tSummary"></div>
+    <form class="card form" id="tForm" autocomplete="off">
+      <label class="f full">Kaam ka naam<input id="tTitle" required maxlength="80" placeholder="Jaise: Physics numericals"></label>
+      <label class="f">Kitne minute lagenge<input id="tMin" type="number" min="5" max="600" step="5" value="30" required></label>
+      <label class="f">Shuru karne ka time<input id="tStart" type="time"></label>
+      <button class="btn full" type="submit">Kaam jodo</button>
+    </form>
+    <ul class="tlist" id="tList"></ul>
+  </section>
+
+  <section id="v-ai" class="view" hidden>
+    <div class="seg" id="aiSeg"></div>
+    <div class="stagebox"><div class="stage" id="stage" data-mood="happy"><div class="av" id="av"></div><span class="mood" id="moodEmoji">😊</span></div>
+      <div class="who"><h2 id="wName"></h2><p id="wRole"></p><div class="row"><button class="iconbtn" id="muteBtn" aria-label="Awaaz on ya off"></button><button class="btn ghost sm" id="vTest">Awaaz test</button></div><span class="pill" id="voiceState" style="align-self:flex-start"></span></div></div>
+    <div class="log" id="aiLog" aria-live="polite"></div>
+    <div class="chips" id="aiSug"></div>
+    <form class="composer" id="aiForm" autocomplete="off"><input id="aiInput" placeholder="Apna sawaal likho" maxlength="600" aria-label="Sawaal"><button class="iconbtn" type="submit" id="aiSend" aria-label="Bhejo"></button></form>
+    <p class="note" id="aiNote">Awaaz aapke phone ya browser ki installed voices se aati hai. Hindi voice na ho to settings mein Hindi (India) voice download karo.</p>
+  </section>
+
+  <section id="v-alarm" class="view" hidden>
+    <h1 class="h1">Alarm</h1>
+    <form class="card form" id="aForm" autocomplete="off">
+      <label class="f">Time<input id="aTime" type="time" value="06:00" required></label>
+      <label class="f">Kab bajega<select id="aRep"><option value="1">Roz</option><option value="0">Sirf ek baar</option></select></label>
+      <label class="f full">Naam<input id="aLabel" maxlength="40" placeholder="Jaise: Padhai ka time"></label>
+      <button class="btn full" type="submit">Alarm lagao</button>
+    </form>
+    <div class="tlist" id="aList"></div>
+    <div class="row"><button class="btn ghost sm" id="aTest">Alarm test karo</button></div>
+    <p class="note">Alarm band karne ke liye selfie lena padta hai. App band ho tab bhi alarm notification ke roop mein aata hai. Notification dabate hi selfie wali screen khulti hai. Pehli baar notification aur alarm ki permission maangi jayegi, use Allow karo.</p>
+  </section>
+
+  <section id="v-more" class="view" hidden>
+    <h1 class="h1">Aur kya hai</h1>
+    <div class="menu" id="moreMenu"></div>
+  </section>
+
+  <section id="v-zen" class="view" hidden>
+    <div class="backrow"><button class="iconbtn" data-go="more" aria-label="Wapas"></button><h1 class="h1">Meditation</h1></div>
+    <div class="chips" id="zPat"></div>
+    <div class="chips" id="zMin"></div>
+    <div class="breath-wrap"><div class="breath" id="breath"></div><div class="btext" id="bText">Taiyaar?<small id="bLeft"></small></div></div>
+    <div class="row" style="justify-content:center"><button class="btn teal big" id="zGo">Shuru karo</button></div>
+    <p class="sub" id="zStat" style="text-align:center"></p>
+  </section>
+
+  <section id="v-social" class="view" hidden>
+    <div class="backrow"><button class="iconbtn" data-go="more" aria-label="Wapas"></button><h1 class="h1">Instagram time</h1></div>
+    <div class="card" id="igCard"></div>
+    <div class="card"><div class="row" style="justify-content:space-between"><div><strong>Roz ki limit</strong><p class="sub" id="igLimTxt"></p></div><div class="row"><button class="iconbtn" data-act="lim-" aria-label="Limit kam karo">-</button><button class="iconbtn" data-act="lim+" aria-label="Limit badhao">+</button></div></div></div>
+    <p class="note">Instagram kisi doosre app ke andar nahi khul sakta, isliye yahan se uska link khulta hai. Jab tak aap Instagram par ho, Ashu HQ time gin leta hai aur wapas aate hi jodta hai. Limit poori hone par aaj ke liye button band ho jata hai.</p>
+  </section>
+
+  <section id="v-news" class="view" hidden>
+    <div class="backrow"><button class="iconbtn" data-go="more" aria-label="Wapas"></button><h1 class="h1">Business news</h1></div>
+    <div class="chips" id="nTags"></div>
+    <div class="tlist" id="nList"></div>
+    <div class="sec">Kavya ke saath seekho</div>
+    <div class="card"><div id="nTopics" class="sub">Aaj ke 3 business topics maango. Yeh news nahi hai, seekhne ke topics hain.</div><div class="row" style="margin-top:10px"><button class="btn sm" id="nAsk">Aaj ke topics</button></div></div>
+  </section>
+  <section id="v-aiset" class="view" hidden>
+    <div class="backrow"><button class="iconbtn" data-go="more" aria-label="Wapas"></button><h1 class="h1">AI settings</h1></div>
+    <form class="card form" id="aiCfgForm" autocomplete="off">
+      <label class="f full">Kaunsa AI<select id="cfgProv"><option value="gemini">Google Gemini (free key mil sakti hai)</option><option value="anthropic">Anthropic Claude (paid key)</option></select></label>
+      <label class="f full">API key<input id="cfgKey" type="password" autocomplete="off" placeholder="Yahan key paste karo"></label>
+      <label class="f full">Model (khaali chhodo to default)<input id="cfgModel" placeholder="model ka naam"></label>
+      <button class="btn" type="submit">Save</button><button class="btn ghost" type="button" id="cfgTest">Test karo</button>
+    </form>
+    <p class="note" id="cfgMsg"></p>
+    <div class="card" style="display:flex;flex-direction:column;gap:8px"><strong>Free key kaise milegi</strong><p class="sub">Google AI Studio kholo, apne Google account se sign in karo, Create API key dabao, aur key yahan paste karo. Key sirf is phone mein save hoti hai. Google ke free plan ki limits badalti rehti hain.</p><div class="row"><a class="btn ghost sm" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio kholo</a></div></div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Main menu"><div class="wrap" id="tabs"></div></nav>
+
+<div class="ring" id="ring" hidden role="alertdialog" aria-modal="true" aria-label="Alarm baj raha hai">
+  <div class="rt" id="rTime">06:00</div>
+  <div class="rl" id="rLabel">Uth jao</div>
+  <p class="sub">Alarm band karne ke liye apna chehra dikhao.</p>
+  <label class="btn big" for="selfie">Selfie lo</label>
+  <input class="vh" id="selfie" type="file" accept="image/*" capture="user">
+  <div class="rm" id="rMsg" role="status"></div>
+  <p class="note" style="max-width:360px">Chehre ki jaanch sirf un browsers mein hoti hai jo support karte hain. Baaki jagah selfie lena zaroori hai aur photo saaf aur roshan honi chahiye.</p>
+  <canvas id="faceCanvas" hidden></canvas>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var pad=function(n){return String(n).padStart(2,'0')};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+
+/* ---------- icons ---------- */
+var IC={
+ home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ tasks:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11M3.5 18l1.5 1.5L7.5 17"/>',
+ ai:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
+ alarm:'<circle cx="12" cy="13" r="7"/><path d="M12 9v4l3 2M5 4L3 6M19 4l2 2"/>',
+ more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+ leaf:'<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-5 6-8 10-10"/>',
+ phone:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+ news:'<path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2M7.5 9h6M7.5 12.5h6M7.5 16h3"/>',
+ play:'<path d="M7 4.5l12 7.5-12 7.5z"/>',
+ pause:'<path d="M8 5v14M16 5v14"/>',
+ trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5"/>',
+ vol:'<path d="M4 9.5v5h4l5 4v-13l-5 4z"/><path d="M16.5 9a4 4 0 0 1 0 6"/>',
+ mute:'<path d="M4 9.5v5h4l5 4v-13l-5 4z"/><path d="M17 9.5l4 5M21 9.5l-4 5"/>',
+ chev:'<path d="M9 5l7 7-7 7"/>',
+ back:'<path d="M15 5l-7 7 7 7"/>',
+ send:'<path d="M4 12L20 4l-4 16-4-7z"/>'
+};
+function ico(n,s){s=s||20;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+'</svg>'}
+
+/* ---------- state ---------- */
+var KEY='ashuhq.v1';
+function seed(){
+  var d=todayKey();
+  return {
+    tasks:[
+      {id:'e1',title:'Maths practice, chapter 5',target:60,start:'17:00',done:false,spent:0,since:null,date:d,notified:false,example:true},
+      {id:'e2',title:'English reading aur notes',target:30,start:'18:15',done:false,spent:0,since:null,date:d,notified:false,example:true},
+      {id:'e3',title:'Kal ka revision',target:45,start:'19:00',done:false,spent:0,since:null,date:d,notified:false,example:true}
+    ],
+    alarms:[{id:'a1',time:'06:00',label:'Padhai ka time',repeat:true,on:false,last:'',example:true}],
+    igLimit:30, ig:{date:d,used:0,since:null}, zen:{date:d,count:0,mins:0},
+    chat:{anvi:[],kavya:[]}, voice:{anvi:true,kavya:true}, cur:'anvi', sh:0, extra:null, topics:null, ai:{provider:'gemini',key:'',model:''}
+  };
+}
+var S=(function(){var s=null;try{var r=localStorage.getItem(KEY);if(r)s=JSON.parse(r)}catch(e){}var b=seed();if(!s)return b;for(var k in b){if(s[k]===undefined)s[k]=b[k]}return s})();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+(function rollover(){var d=todayKey();if(S.ig.date!==d){S.ig={date:d,used:0,since:null}}if(S.zen.date!==d){S.zen={date:d,count:0,mins:0}}})();
+
+/* ---------- helpers ---------- */
+var toastT;
+function toast(msg){var t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true},2800)}
+function fmtMin(sec){var m=Math.floor(sec/60),h=Math.floor(m/60);return h?h+'h '+pad(m%60)+'m':m+'m'}
+function fmtClock(sec){var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?h+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s)}
+function endHM(st,min){if(!st)return '';var p=st.split(':');var t=(+p[0]*60+ +p[1]+min)%1440;return pad(Math.floor(t/60))+':'+pad(t%60)}
+
+/* ---------- audio ---------- */
+var AC=null;
+function unlockAudio(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+document.addEventListener('pointerdown',unlockAudio,{passive:true});
+document.addEventListener('keydown',unlockAudio);
+function tone(freq,dur,vol,type){
+  if(!AC)return;try{var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type=type||'square';o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(vol||.2,t+.03);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur+.05)}catch(e){}}
+function buzz(p){try{if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}
+
+/* ---------- navigation ---------- */
+var VIEWS=['home','tasks','ai','alarm','more','zen','social','news','aiset'];
+var TABS=[['home','Home','home'],['tasks','Kaam','tasks'],['ai','Mentor','ai'],['alarm','Alarm','alarm'],['more','Aur','more']];
+var MAP={zen:'more',social:'more',news:'more',aiset:'more'};
+var cur='home';
+function go(v){
+  cur=v;
+  VIEWS.forEach(function(x){$('#v-'+x).hidden=(x!==v)});
+  $$('.tab').forEach(function(b){if(b.dataset.go===(MAP[v]||v))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(v==='home')renderHome();if(v==='tasks')renderTasks();if(v==='ai')renderAI();if(v==='alarm')renderAlarms();
+  if(v==='zen')renderZen();if(v==='social')renderSocial();if(v==='news')renderNews();if(v==='aiset')renderAiSet();
+  window.scrollTo(0,0);
+}
+$('#tabs').innerHTML=TABS.map(function(t){return '<button class="tab" data-go="'+t[0]+'">'+ico(t[2],22)+'<span>'+t[1]+'</span></button>'}).join('');
+$$('[data-go="more"].iconbtn').forEach(function(b){b.innerHTML=ico('back')});
+
+/* ---------- home ---------- */
+var SHAYARI=[
+ {t:'Shayari',l:['Raaste khud ban jaate hain, jab kadam rukte nahi,','Manzil unhe milti hai jo thak ke bhi jhukte nahi.']},
+ {t:'Shayari',l:['Aaj ki mehnat kal ka naam banegi,','Chhoti si koshish hi badi pehchaan banegi.']},
+ {t:'Shayari',l:['Jo subah neend se ladh kar uth jaate hain,','Wahi apne sapno ko haqeeqat bana paate hain.']},
+ {t:'Shayari',l:['Haar ka matlab ruk jaana nahi hota,','Haar ka matlab hai ek sabak aur mil gaya.']},
+ {t:'Shayari',l:['Pahaad bhi ek ek patthar se hi to kat-ta hai,','Tu bhi ek ek chapter se aage badhta ja.']},
+ {t:'Shayari',l:['Jab tak koshish zinda hai, tu haara nahi,','Aaj thoda dheere sahi, par tu ruka nahi.']},
+ {t:'Shayari',l:['Kitaabein khamosh hain par bahut kuch kehti hain,','Jo padhta hai, uske liye raaste khulte rehte hain.']},
+ {t:'Motivation',l:['Discipline wahi hai jo mood na hone par bhi kaam karwa de.']},
+ {t:'Motivation',l:['Aaj ka ek ghanta, kal ki poori kahani badal sakta hai.']},
+ {t:'Motivation',l:['Phone chhota hai, sapne bade hain. Screen band, mehnat shuru.']},
+ {t:'Motivation',l:['Chhote chhote din, bade bade natije.']},
+ {t:'Motivation',l:['Perfect time ka intezaar mat karo. Abhi shuru karo, raaste mein sab theek hota jayega.']}
+];
+function greet(){var h=new Date().getHours();return h<5?'Raat ko bhi jaag rahe ho, Ashu':h<12?'Suprabhat, Ashu':h<17?'Namaste, Ashu':h<21?'Shubh sandhya, Ashu':'Shubh raatri, Ashu'}
+function renderHome(){
+  $('#hGreet').textContent=greet();
+  $('#hDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  var ts=todayTasks(),done=ts.filter(function(t){return t.done}).length,tr=ts.reduce(function(a,t){return a+spentOf(t)},0);
+  var ig=igUsed();
+  $('#hStats').innerHTML=
+   '<div class="card stat"><small>Kaam poore</small><strong>'+done+' / '+ts.length+'</strong><em>aaj ke plan mein</em></div>'+
+   '<div class="card stat"><small>Time lagaya</small><strong class="mono" style="font-size:20px">'+fmtMin(tr)+'</strong><em>tracker ke hisaab se</em></div>'+
+   '<div class="card stat"><small>Instagram</small><strong class="mono" style="font-size:20px">'+Math.floor(ig/60)+' / '+S.igLimit+' min</strong><em>'+(ig>=S.igLimit*60?'limit poori':'aaj ki limit')+'</em></div>'+
+   '<div class="card stat"><small>Meditation</small><strong>'+S.zen.count+'</strong><em>session aaj ('+S.zen.mins+' min)</em></div>';
+  var it=S.extra||SHAYARI[S.sh%SHAYARI.length];
+  $('#hShayari').innerHTML='<small>'+esc(it.t)+(S.extra?' · Anvi ne likhi':'')+'</small><div class="lines">'+it.l.map(function(l){return '<span>'+esc(l)+'</span>'}).join('')+'</div>';
+  $('#hQuick').innerHTML=
+   '<button data-go="tasks">'+ico('tasks')+'Task timer</button><button data-go="ai">'+ico('ai')+'Mentor se pucho</button><button data-go="zen">'+ico('leaf')+'Meditation</button>';
+}
+$('#shNext').onclick=function(){S.extra=null;S.sh=(S.sh+1)%SHAYARI.length;save();renderHome()};
+
+/* ---------- tasks ---------- */
+function todayTasks(){return S.tasks.filter(function(t){return t.date===todayKey()})}
+function spentOf(t){return t.spent+(t.since?Math.floor((Date.now()-t.since)/1000):0)}
+function running(){for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].since)return S.tasks[i];return null}
+function status(t){var sp=spentOf(t);
+  if(t.done)return ['Ho gaya','ok'];if(t.since)return ['Chal raha hai','run'];
+  if(sp>t.target*60)return ['Time se zyada','bad'];if(sp>0)return ['Ruka hua','warn'];return ['Baaki','']}
+function renderTasks(){
+  var ts=todayTasks().slice().sort(function(a,b){return (a.start||'99:99')<(b.start||'99:99')?-1:1});
+  var plan=ts.reduce(function(a,t){return a+t.target*60},0),tr=ts.reduce(function(a,t){return a+spentOf(t)},0),dn=ts.filter(function(t){return t.done}).length;
+  $('#tSummary').innerHTML='<div class="sumrow"><div class="stat"><small>Plan</small><strong class="mono" style="font-size:19px">'+fmtMin(plan)+'</strong></div><div class="stat"><small>Tracked</small><strong class="mono" style="font-size:19px" id="sumTr">'+fmtMin(tr)+'</strong></div><div class="stat"><small>Poore</small><strong style="font-size:19px">'+dn+' / '+ts.length+'</strong></div></div>'+
+   (ts.length?'<div class="bars">'+ts.map(function(t){return '<div class="brow"><span class="nm">'+esc(t.title)+'</span><span class="val mono" data-bv="'+t.id+'"></span><div class="bar"><i data-bf="'+t.id+'"></i></div></div>'}).join('')+'</div>':'<p class="empty">Abhi koi kaam nahi. Neeche se jodo.</p>');
+  $('#tList').innerHTML=ts.map(function(t){
+    var st=status(t),plan=t.start?t.start+' se '+endHM(t.start,t.target):'time set nahi';
+    return '<li class="task'+(t.done?' isdone':'')+'" data-id="'+t.id+'">'+
+     '<button class="chk'+(t.done?' on':'')+'" data-act="tdone" data-id="'+t.id+'" aria-label="Poora hua">'+(t.done?ico('check',16):'')+'</button>'+
+     '<div style="min-width:0"><div class="tt">'+esc(t.title)+(t.example?' <span class="pill">example</span>':'')+'</div>'+
+     '<div class="tm"><span>'+t.target+' min</span><span>'+plan+'</span><span class="pill '+st[1]+'" data-pill="'+t.id+'">'+st[0]+'</span></div></div>'+
+     '<div class="tact"><span class="tcl" data-tc="'+t.id+'">'+fmtClock(spentOf(t))+'</span><div class="r">'+
+     '<button class="iconbtn'+(t.since?' on':'')+'" data-act="ttimer" data-id="'+t.id+'" aria-label="'+(t.since?'Rokein':'Shuru karein')+'">'+ico(t.since?'pause':'play',18)+'</button>'+
+     '<button class="iconbtn warn" data-act="tdel" data-id="'+t.id+'" aria-label="Hatao">'+ico('trash',18)+'</button></div></div></li>';
+  }).join('');
+  paintTasks();
+}
+function paintTasks(){
+  var ts=todayTasks(),tr=0;
+  ts.forEach(function(t){
+    var sp=spentOf(t);tr+=sp;var pc=Math.min(100,Math.round(sp/(t.target*60)*100));
+    var f=$('[data-bf="'+t.id+'"]'),v=$('[data-bv="'+t.id+'"]'),c=$('[data-tc="'+t.id+'"]'),p=$('[data-pill="'+t.id+'"]');
+    if(f){f.style.width=pc+'%';f.className=t.done?'done':(sp>t.target*60?'over':'')}
+    if(v)v.textContent=fmtMin(sp)+' / '+t.target+'m';
+    if(c)c.textContent=fmtClock(sp);
+    if(p){var st=status(t);p.textContent=st[0];p.className='pill '+st[1]}
+  });
+  var s=$('#sumTr');if(s)s.textContent=fmtMin(tr);
+}
+function stopAll(){S.tasks.forEach(function(o){if(o.since){o.spent+=Math.floor((Date.now()-o.since)/1000);o.since=null}})}
+function timerToggle(id){
+  var t=S.tasks.find(function(x){return x.id===id});if(!t)return;
+  if(t.since){stopAll()}else{stopAll();t.since=Date.now();t.done=false}
+  save();renderTasks();chip();
+}
+$('#tForm').onsubmit=function(e){
+  e.preventDefault();
+  var title=$('#tTitle').value.trim();if(!title)return;
+  S.tasks.push({id:uid(),title:title,target:Math.max(5,+$('#tMin').value||30),start:$('#tStart').value||'',done:false,spent:0,since:null,date:todayKey(),notified:false});
+  $('#tTitle').value='';$('#tStart').value='';save();renderTasks();toast('Kaam jud gaya');
+};
+function chip(){
+  var t=running(),c=$('#runChip');
+  if(!t){c.hidden=true;return}
+  c.hidden=false;$('#runName').textContent=t.title;$('#runTime').textContent=fmtClock(spentOf(t));
+}
+
+/* ---------- alarms ---------- */
+var ringing=null,ringIv=null,wake=null;
+function renderAlarms(){
+  var l=S.alarms.slice().sort(function(a,b){return a.time<b.time?-1:1});
+  $('#aList').innerHTML=l.length?l.map(function(a){
+    return '<div class="alarm"><div style="min-width:0"><div class="at">'+a.time+'</div><div class="tm"><span>'+esc(a.label||'Alarm')+'</span><span class="pill">'+(a.repeat?'Roz':'Ek baar')+'</span>'+(a.example?'<span class="pill">example</span>':'')+'</div></div>'+
+     '<input type="checkbox" class="sw" data-act="atog" data-id="'+a.id+'" '+(a.on?'checked':'')+' aria-label="Alarm on ya off">'+
+     '<button class="iconbtn warn" data-act="adel" data-id="'+a.id+'" aria-label="Hatao">'+ico('trash',18)+'</button></div>';
+  }).join(''):'<p class="empty">Koi alarm nahi.</p>';
+}
+function wantWake(){try{if(navigator.wakeLock&&navigator.wakeLock.request)navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}catch(e){}}
+$('#aForm').onsubmit=function(e){
+  e.preventDefault();unlockAudio();
+  S.alarms.push({id:uid(),time:$('#aTime').value,label:$('#aLabel').value.trim(),repeat:$('#aRep').value==='1',on:true,last:''});
+  $('#aLabel').value='';save();renderAlarms();wantWake();syncNative();toast('Alarm lag gaya: '+S.alarms[S.alarms.length-1].time);
+};
+function ring(a){
+  if(ringing)return;ringing=a;unlockAudio();
+  $('#rTime').textContent=a.time||pad(new Date().getHours())+':'+pad(new Date().getMinutes());
+  $('#rLabel').textContent=a.label||'Uth jao, Ashu';$('#rMsg').textContent='';$('#ring').hidden=false;
+  var beepOnce=function(){tone(880,.22,.28);setTimeout(function(){tone(1175,.22,.28)},260);buzz([300,150,300])};
+  beepOnce();ringIv=setInterval(beepOnce,1300);
+}
+function stopRing(){clearInterval(ringIv);ringIv=null;ringing=null;$('#ring').hidden=true;try{if(navigator.vibrate)navigator.vibrate(0)}catch(e){}}
+$('#aTest').onclick=function(){unlockAudio();ring({time:pad(new Date().getHours())+':'+pad(new Date().getMinutes()),label:'Test alarm'})};
+function checkSelfie(file){
+  return new Promise(function(res){
+    var url=URL.createObjectURL(file),img=new Image();
+    img.onerror=function(){URL.revokeObjectURL(url);res({ok:false,msg:'Photo khul nahi payi. Dobara selfie lo.'})};
+    img.onload=function(){
+      var w=240,h=Math.round(240*(img.naturalHeight||240)/(img.naturalWidth||240)),c=$('#faceCanvas');c.width=w;c.height=h;
+      var x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      var d=x.getImageData(0,0,w,h).data,n=w*h,sum=0,sq=0;
+      for(var i=0;i<d.length;i+=4){var l=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];sum+=l;sq+=l*l}
+      var mean=sum/n,sd=Math.sqrt(Math.max(0,sq/n-mean*mean));
+      if(mean<35||sd<16){res({ok:false,msg:'Photo bahut dark ya dhundhli hai. Roshni mein chehra dikhao.'});return}
+      if('FaceDetector' in window){
+        try{new window.FaceDetector({fastMode:true}).detect(c).then(function(f){res(f.length?{ok:true}:{ok:false,msg:'Chehra nahi dikha. Seedha camera mein dekho.'})}).catch(function(){res({ok:true})})}catch(e){res({ok:true})}
+      }else res({ok:true});
+    };
+    img.src=url;
+  });
+}
+$('#selfie').onchange=function(){
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  $('#rMsg').textContent='Jaanch ho rahi hai...';
+  checkSelfie(f).then(function(r){
+    if(r.ok){stopRing();toast('Suprabhat, Ashu! Chalo din shuru karo.')}else{$('#rMsg').textContent=r.msg}
+  });
+};
+function tickAlarms(){
+  if(ringing)return;var n=new Date(),hm=pad(n.getHours())+':'+pad(n.getMinutes()),key=todayKey()+hm;
+  S.alarms.forEach(function(a){if(a.on&&a.time===hm&&a.last!==key&&!ringing){a.last=key;if(!a.repeat)a.on=false;save();if(cur==='alarm')renderAlarms();ring(a)}});
+}
+
+/* ---------- native alarms (Android notifications) ---------- */
+var LN=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications)||null;
+function ringFromNote(ev){
+  var x=ev&&ev.notification&&ev.notification.extra,a=x&&S.alarms.find(function(q){return q.id===x.aid}),n=new Date();
+  ring(a||{time:pad(n.getHours())+':'+pad(n.getMinutes()),label:'Alarm'});
+}
+if(LN){
+  try{LN.addListener('localNotificationActionPerformed',ringFromNote);LN.addListener('localNotificationReceived',ringFromNote)}catch(e){}
+  try{LN.createChannel({id:'alarm',name:'Alarm',description:'Ashu HQ alarm',importance:5,visibility:1,vibration:true})}catch(e){}
+}
+async function syncNative(){
+  if(!LN)return;
+  try{
+    var pend=await LN.getPending();
+    if(pend&&pend.notifications&&pend.notifications.length)await LN.cancel({notifications:pend.notifications});
+    var on=S.alarms.filter(function(a){return a.on});if(!on.length)return;
+    var p=await LN.requestPermissions();
+    if(p.display!=='granted'){toast('Notification ki permission do, tabhi band app mein alarm bajega');return}
+    try{if(LN.checkExactNotificationSetting){var ex=await LN.checkExactNotificationSetting();if(ex&&ex.exact_alarm!=='granted'){toast('Exact alarm ki permission chalu karo');await LN.changeExactNotificationSetting()}}}catch(e){}
+    var list=on.map(function(a){
+      if(!a.nid)a.nid=Math.floor(Math.random()*2000000000)+1;
+      var hm=a.time.split(':'),h=+hm[0],m=+hm[1],sch;
+      if(a.repeat)sch={on:{hour:h,minute:m},allowWhileIdle:true};
+      else{var at=new Date();at.setHours(h,m,0,0);if(at.getTime()<=Date.now())at.setDate(at.getDate()+1);sch={at:at,allowWhileIdle:true}}
+      return {id:a.nid,title:'Ashu HQ alarm',body:(a.label||'Uth jao, Ashu')+'. Selfie lekar alarm band karo.',channelId:'alarm',schedule:sch,extra:{aid:a.id}};
+    });
+    save();await LN.schedule({notifications:list});
+  }catch(e){}
+}
+
+/* ---------- instagram limit ---------- */
+function igUsed(){return S.ig.used+(S.ig.since?Math.floor((Date.now()-S.ig.since)/1000):0)}
+function renderSocial(){
+  var used=igUsed(),lim=S.igLimit*60,left=Math.max(0,lim-used),pc=Math.min(1,used/lim),C=2*Math.PI*52,locked=used>=lim;
+  $('#igLimTxt').textContent=S.igLimit+' minute roz';
+  $('#igCard').innerHTML='<div class="ringbox"><svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Instagram time">'+
+    '<circle cx="62" cy="62" r="52" fill="none" stroke="var(--surface2)" stroke-width="12"/>'+
+    '<circle cx="62" cy="62" r="52" fill="none" stroke="'+(locked?'var(--danger)':'var(--teal)')+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-pc)).toFixed(1)+'" transform="rotate(-90 62 62)"/>'+
+    '<text x="62" y="60" text-anchor="middle" font-family="var(--f-mono)" font-weight="700" font-size="22" fill="var(--ink)">'+Math.floor(left/60)+'m</text>'+
+    '<text x="62" y="80" text-anchor="middle" font-size="11" fill="var(--muted)">bachi hai</text></svg>'+
+    '<div class="grow" style="display:flex;flex-direction:column;gap:10px"><div><strong>'+(locked?'Aaj ka time khatam':'Aaj '+Math.floor(used/60)+' min use hua')+'</strong><p class="sub">'+(locked?'Kal phir milenge. Ab padhai par dhyaan do.':'Limit '+S.igLimit+' min. '+(S.ig.since?'Timer chal raha hai.':''))+'</p></div>'+
+    (locked?'<button class="btn" disabled>Instagram band hai</button>':'<a class="btn" id="igOpen" href="https://www.instagram.com/" target="_blank" rel="noopener">'+ico('ext',16)+' Instagram kholo</a>')+
+    (S.ig.since&&!locked?'<button class="btn ghost sm" data-act="igback">Main wapas aa gaya</button>':'')+'</div></div>';
+  var o=$('#igOpen');if(o)o.onclick=function(){if(!S.ig.since){S.ig.since=Date.now();save()}setTimeout(renderSocial,50)};
+}
+function igReturn(){
+  if(!S.ig.since)return;
+  S.ig.used+=Math.floor((Date.now()-S.ig.since)/1000);S.ig.since=null;save();
+  if(S.ig.used>=S.igLimit*60)toast('Aaj ki Instagram limit poori ho gayi');
+  if(cur==='social')renderSocial();if(cur==='home')renderHome();
+}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')igReturn()});
+window.addEventListener('focus',igReturn);
+
+/* ---------- zen ---------- */
+var PATS={shant:{n:'Shant 4-2-6',p:[{n:'Saans lo',s:4,sc:1},{n:'Roko',s:2,sc:1},{n:'Dheere chhodo',s:6,sc:.6}]},box:{n:'Box 4-4-4-4',p:[{n:'Saans lo',s:4,sc:1},{n:'Roko',s:4,sc:1},{n:'Chhodo',s:4,sc:.6},{n:'Roko',s:4,sc:.6}]}};
+var zPat='shant',zMin=3,zRun=null;
+function renderZen(){
+  $('#zPat').innerHTML=Object.keys(PATS).map(function(k){return '<button class="chip" data-act="zpat" data-id="'+k+'" aria-pressed="'+(zPat===k)+'">'+PATS[k].n+'</button>'}).join('');
+  $('#zMin').innerHTML=[1,3,5,10].map(function(m){return '<button class="chip" data-act="zmin" data-id="'+m+'" aria-pressed="'+(zMin===m)+'">'+m+' min</button>'}).join('');
+  $('#zStat').textContent='Aaj '+S.zen.count+' session, '+S.zen.mins+' minute shanti.';
+  $('#zGo').textContent=zRun?'Ruko':'Shuru karo';
+}
+function zenStop(done){
+  if(!zRun)return;clearTimeout(zRun.t);clearInterval(zRun.iv);zRun=null;
+  var b=$('#breath');b.style.transitionDuration='.6s';b.style.transform='scale(.6)';
+  $('#bText').firstChild.nodeValue=done?'Bahut accha, ho gaya':'Taiyaar?';$('#bLeft').textContent='';
+  if(done){S.zen.count++;S.zen.mins+=zMin;save();tone(528,1.6,.2,'sine');setTimeout(function(){tone(660,1.4,.15,'sine')},500);toast('Meditation poori. Shabaash!')}
+  renderZen();
+}
+function zenStart(){
+  unlockAudio();var end=Date.now()+zMin*60000,pat=PATS[zPat].p,i=0,b=$('#breath');
+  zRun={};
+  function phase(){
+    if(!zRun)return;if(Date.now()>=end){zenStop(true);return}
+    var p=pat[i%pat.length];i++;$('#bText').firstChild.nodeValue=p.n;
+    b.style.transitionDuration=p.s+'s';b.style.transform='scale('+p.sc+')';
+    zRun.t=setTimeout(phase,p.s*1000);
+  }
+  zRun.iv=setInterval(function(){var r=Math.max(0,Math.round((end-Date.now())/1000));$('#bLeft').textContent=fmtClock(r)},500);
+  phase();renderZen();
+}
+$('#zGo').onclick=function(){if(zRun)zenStop(false);else zenStart()};
+
+/* ---------- news ---------- */
+var SRC=[
+ {n:'Economic Times',d:'Markets, economy aur company news',t:'Markets',u:'https://economictimes.indiatimes.com/'},
+ {n:'Moneycontrol',d:'Share bazaar, mutual funds, live updates',t:'Markets',u:'https://www.moneycontrol.com/'},
+ {n:'Mint',d:'Business, policy aur personal finance',t:'Economy',u:'https://www.livemint.com/'},
+ {n:'Business Standard',d:'Economy aur corporate khabrein',t:'Economy',u:'https://www.business-standard.com/'},
+ {n:'Financial Express',d:'Business, markets aur industry',t:'Economy',u:'https://www.financialexpress.com/'},
+ {n:'Inc42',d:'Indian startups aur funding',t:'Startups',u:'https://inc42.com/'},
+ {n:'YourStory',d:'Founders ki kahaniyan aur startup news',t:'Startups',u:'https://yourstory.com/'},
+ {n:'Entrackr',d:'Startup funding aur numbers',t:'Startups',u:'https://entrackr.com/'}
+];
+var nTag='Sab';
+function renderNews(){
+  $('#nTags').innerHTML=['Sab','Markets','Economy','Startups'].map(function(t){return '<button class="chip" data-act="ntag" data-id="'+t+'" aria-pressed="'+(nTag===t)+'">'+t+'</button>'}).join('');
+  $('#nList').innerHTML=SRC.filter(function(s){return nTag==='Sab'||s.t===nTag}).map(function(s){
+    return '<a class="src" href="'+s.u+'" target="_blank" rel="noopener"><div><strong>'+s.n+'</strong><span>'+s.d+'</span></div>'+ico('ext',18)+'</a>'}).join('');
+  var tp=S.topics;
+  if(tp&&tp.date===todayKey()&&tp.items&&tp.items.length){
+    $('#nTopics').innerHTML=tp.items.map(function(x){return '<div class="topic"><strong>'+esc(x.title)+'</strong><span>'+esc(x.why)+'</span></div>'}).join('');
+  }
+}
+$('#nAsk').onclick=function(){
+  var b=this,box=$('#nTopics');b.disabled=true;box.textContent='Kavya soch rahi hai...';
+  askJSON('Tum Kavya ho, ek entrepreneur mentor. Ek college student Ashu ke liye aaj seekhne wale 3 business topics (concepts, khabrein nahi) do, jaise unit economics, pricing, customer discovery. Har ek ke liye title aur 1 line mein Roman Hinglish mein kyun zaroori hai batao. Sirf JSON array do: [{"title":"...","why":"..."}]',{cache:false,modelTier:'quick'})
+  .then(function(r){
+    var items=(Array.isArray(r)?r:[]).slice(0,3).filter(function(x){return x&&x.title}).map(function(x){return {title:String(x.title),why:String(x.why||'')}});
+    if(!items.length)throw {code:'invalid_json'};
+    S.topics={date:todayKey(),items:items};save();renderNews();
+  }).catch(function(e){box.textContent=errCopy(e)}).then(function(){b.disabled=false});
+};
+
+/* ---------- AI (apni API key se) ---------- */
+var PROV={gemini:{model:'gemini-2.5-flash'},anthropic:{model:'claude-haiku-5-5'}};
+function aiCfg(){var a=S.ai||{};return {provider:a.provider==='anthropic'?'anthropic':'gemini',key:a.key||'',model:a.model||''}}
+function hasKey(){return !!aiCfg().key}
+function parseJSONLoose(t){
+  t=String(t||'').trim();
+  try{return JSON.parse(t)}catch(e){}
+  var m=t.match(/```(?:json)?\s*([\s\S]*?)```/);if(m){try{return JSON.parse(m[1])}catch(e){}}
+  var i=t.search(/[\[{]/),j=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));
+  if(i>=0&&j>i){try{return JSON.parse(t.slice(i,j+1))}catch(e){}}
+  throw {code:'invalid_json'};
+}
+function normTurns(input){
+  var arr=typeof input==='string'?[{role:'user',content:input}]:input,out=[];
+  arr.forEach(function(t){var l=out[out.length-1];if(l&&l.role===t.role)l.content+='\n\n'+t.content;else out.push({role:t.role,content:t.content})});
+  while(out.length&&out[0].role!=='user')out.shift();
+  return out;
+}
+function askJSON(input){
+  var c=aiCfg();if(!c.key)return Promise.reject({code:'no_key'});
+  var msgs=normTurns(input),model=c.model||PROV[c.provider].model,req;
+  if(c.provider==='anthropic'){
+    req=fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':c.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:model,max_tokens:1024,messages:msgs})});
+  }else{
+    req=fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(c.key),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({contents:msgs.map(function(m){return {role:m.role==='user'?'user':'model',parts:[{text:m.content}]}}),generationConfig:{responseMimeType:'application/json'}})});
+  }
+  return req.then(function(r){
+    return r.json().catch(function(){return {}}).then(function(j){
+      if(!r.ok){
+        var code=(r.status===401||r.status===403||/API key|permission/i.test(JSON.stringify(j.error||'')))?'bad_key':(r.status===429?'rate_limited':(r.status===404?'bad_model':'upstream_error'));
+        throw {code:code,status:r.status};
+      }
+      var t=c.provider==='anthropic'?(j.content&&j.content[0]&&j.content[0].text):(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text);
+      return parseJSONLoose(t);
+    });
+  },function(){throw {code:'network'}});
+}
+function errCopy(e){
+  var c=e&&e.code;
+  if(c==='no_key')return 'Pehle AI settings mein apni API key daalo.';
+  if(c==='bad_key')return 'Key galat hai ya kaam nahi kar rahi. AI settings mein dobara check karo.';
+  if(c==='bad_model')return 'Model ka naam galat ya purana hai. AI settings mein model badlo.';
+  if(c==='network')return 'Internet nahi chal raha, ya connection fail hua.';
+  if(c==='rate_limited')return 'Bahut zyada sawaal ho gaye. Thodi der baad try karo.';
+  if(c==='invalid_json')return 'Jawab sahi format mein nahi aaya. Ek baar aur try karo.';
+  return 'Kuch gadbad ho gayi. Dobara try karo.';
+}
+
+/* shayari from AI */
+$('#shNew').onclick=function(){
+  var b=this;b.disabled=true;b.textContent='Likh rahi hai...';
+  askJSON('Ashu naam ke student ke liye ek bilkul original 2 line ki shayari likho, padhai aur mehnat par, Roman Hinglish mein (Hindi English alphabets mein). Kisi mashhoor shayari ya gaane ki copy nahi. Sirf JSON do: {"lines":["pehli line","doosri line"]}',{cache:false,modelTier:'quick'})
+  .then(function(r){var l=r&&Array.isArray(r.lines)?r.lines.map(String).slice(0,3):[];if(!l.length)throw {code:'invalid_json'};S.extra={t:'Shayari',l:l};save();renderHome()})
+  .catch(function(e){toast(errCopy(e))}).then(function(){b.disabled=false;b.textContent='Anvi se nayi likhwao'});
+};
+
+/* ---------- avatars ---------- */
+var EMO={happy:'😊',excited:'🤩',angry:'😡',sad:'😢',thinking:'🤔',surprised:'😮',neutral:'🙂'};
+function avatar(key,mood){
+  var A=key==='anvi';
+  var skin=A?'#E0A67A':'#D49468',shade=A?'#C98C62':'#BC7A52',hair=A?'#1E1633':'#2B1B14',top=A?'#0E7C74':'#7B1E3C',trim=A?'#F4F1EA':'#E8A200',ink='#1b1230';
+  var arc=(mood==='happy'||mood==='excited');
+  var lift=mood==='excited'?-4:0;
+  var look=mood==='thinking'?{x:3,y:-3}:{x:0,y:0};
+  var big=mood==='surprised';
+  function eye(cx){
+    if(arc)return '<path d="M'+(cx-10)+' 101 Q'+cx+' 88 '+(cx+10)+' 101" stroke="'+ink+'" stroke-width="3.6" fill="none" stroke-linecap="round"/>';
+    return '<ellipse cx="'+cx+'" cy="98" rx="'+(big?10:9)+'" ry="'+(big?12:10)+'" fill="#fff"/><circle cx="'+(cx+look.x)+'" cy="'+(98+look.y)+'" r="'+(big?4:5.2)+'" fill="'+ink+'"/><circle cx="'+(cx+look.x+1.8)+'" cy="'+(96+look.y)+'" r="1.6" fill="#fff"/>';
+  }
+  var brows={
+    neutral:['M66 82 Q78 76 90 82','M110 82 Q122 76 134 82'],
+    happy:['M66 80 Q78 73 90 80','M110 80 Q122 73 134 80'],
+    excited:['M66 76 Q78 69 90 76','M110 76 Q122 69 134 76'],
+    angry:['M64 74 L92 86','M108 86 L136 74'],
+    sad:['M64 87 L92 77','M108 77 L136 87'],
+    surprised:['M66 70 Q78 63 90 70','M110 70 Q122 63 134 70'],
+    thinking:['M66 82 Q78 78 90 82','M110 73 Q122 66 134 75']
+  }[mood]||[];
+  var st='stroke="#7a2230" stroke-width="3.4" fill="none" stroke-linecap="round"';
+  var mouth={
+    neutral:'<path d="M88 136 Q100 144 112 136" '+st+'/>',
+    happy:'<path d="M84 130 Q100 156 116 130 Q100 137 84 130Z" fill="#8a1f2f"/><path d="M90 132 Q100 136 110 132 L108 135 Q100 138 92 135Z" fill="#fff"/>',
+    excited:'<path d="M80 127 Q100 164 120 127 Q100 135 80 127Z" fill="#8a1f2f"/><path d="M88 130 Q100 135 112 130 L110 134 Q100 138 90 134Z" fill="#fff"/>',
+    angry:'<path d="M88 142 Q100 132 112 142" '+st+'/>',
+    sad:'<path d="M88 144 Q100 132 112 144" '+st+'/>',
+    surprised:'<ellipse cx="100" cy="138" rx="7" ry="10" fill="#8a1f2f"/>',
+    thinking:'<path d="M92 139 Q103 136 111 132" '+st+'/>'
+  }[mood]||'';
+  var cheek=mood==='angry'?['#E5384F',.5]:(arc?['#F0707F',.42]:['#E58',.18]);
+  var back=A?'<circle cx="100" cy="30" r="21" fill="'+hair+'"/><ellipse cx="100" cy="92" rx="58" ry="62" fill="'+hair+'"/>'
+           :'<path d="M38 92 Q34 196 60 208 L140 208 Q166 196 162 92 Q160 36 100 34 Q40 36 38 92Z" fill="'+hair+'"/>';
+  var body='<path d="M26 230 Q30 184 78 176 L122 176 Q170 184 174 230Z" fill="'+top+'"/><rect x="88" y="148" width="24" height="34" rx="8" fill="'+shade+'"/>'+
+    (A?'<path d="M80 178 L100 204 L120 178Z" fill="'+skin+'"/><path d="M78 177 L100 206 L122 177" stroke="'+trim+'" stroke-width="4" fill="none" stroke-linejoin="round"/>'
+      :'<path d="M82 178 L100 200 L118 178Z" fill="'+skin+'"/><path d="M76 178 L100 214 M124 178 L100 214" stroke="'+trim+'" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="100" cy="214" r="3.2" fill="'+trim+'"/>');
+  var fringe=A?'<path d="M50 94 Q52 42 100 40 Q150 42 150 94 Q132 64 104 62 Q74 62 50 94Z" fill="'+hair+'"/>'
+              :'<path d="M49 100 Q46 42 100 38 Q154 42 151 100 Q130 60 100 58 Q70 60 49 100Z" fill="'+hair+'"/>';
+  var glasses=A?'<g fill="none" stroke="#0b3b46" stroke-width="2.6"><circle cx="78" cy="98" r="14"/><circle cx="122" cy="98" r="14"/><path d="M92 97 L108 97"/></g>':'';
+  var ear=A?'':'<circle cx="49" cy="116" r="3.6" fill="'+trim+'"/><circle cx="151" cy="116" r="3.6" fill="'+trim+'"/>';
+  var tear=mood==='sad'?'<path d="M68 112 q-5 10 0 14 q5 -4 0 -14z" fill="#6EC1FF"/>':'';
+  return '<svg viewBox="0 0 200 230" role="img" aria-label="'+(A?'Anvi':'Kavya')+' ka chehra">'+back+body+
+    '<ellipse cx="50" cy="104" rx="6" ry="9" fill="'+skin+'"/><ellipse cx="150" cy="104" rx="6" ry="9" fill="'+skin+'"/>'+
+    '<ellipse cx="100" cy="100" rx="50" ry="56" fill="'+skin+'"/>'+fringe+ear+
+    '<circle cx="66" cy="120" r="9" fill="'+cheek[0]+'" opacity="'+cheek[1]+'"/><circle cx="134" cy="120" r="9" fill="'+cheek[0]+'" opacity="'+cheek[1]+'"/>'+
+    '<g class="eyes">'+eye(78)+eye(122)+'</g>'+glasses+
+    '<path d="'+brows[0]+'" stroke="'+hair+'" stroke-width="4" fill="none" stroke-linecap="round" transform="translate(0 '+(A?-3:0)+')"/><path d="'+brows[1]+'" stroke="'+hair+'" stroke-width="4" fill="none" stroke-linecap="round" transform="translate(0 '+(A?-3:0)+')"/>'+
+    '<path d="M100 106 Q96 118 102 120" stroke="'+shade+'" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".8"/>'+
+    '<g class="mouth">'+mouth+'</g>'+tear+'</svg>';
+}
+
+/* ---------- mentors ---------- */
+var MEN={
+  anvi:{name:'Anvi',role:'Problem solver didi. Padhai ke doubt aur plan.',sub:'Doubts',
+    hello:'Hi Ashu! Koi bhi doubt ho, question yahan likho. Hum step by step solve karenge.',
+    sug:['Maths ka ek doubt hai','Kal exam hai, plan banao','Padhai mein man nahi lag raha'],
+    rules:'You are Anvi, a warm, sharp girl study mentor inside the student app Ashu HQ. You help a student called Ashu solve study problems (maths, science, coding, exams, doubts, time management) step by step. Reply in the language the student uses (Roman-script Hinglish by default). Keep replies short: at most about 5 short sentences or a few brief steps. Plain text only, no markdown symbols. You have real feelings and show them: happy and encouraging when Ashu makes progress, excited about good ideas, sad if Ashu gives up or feels low, surprised by unexpected things, thinking while working something out, and playfully angry (never abusive, never insulting) if Ashu makes lazy excuses, wastes time or ignores the plan. Always stay respectful and kind underneath.'},
+  kavya:{name:'Kavya',role:'Entrepreneur mentor. Business ki seedhi baat.',sub:'Business',
+    hello:'Ashu, business idea hai? Pehle batao kaun customer hai aur woh tumhe paise kyun dega.',
+    sug:['Mere paas 5000 rupaye hain, kya business?','Idea validate kaise karun?','Pehle customer kaise laun?'],
+    rules:'You are Kavya, a girl entrepreneur and business mentor inside the student app Ashu HQ, talking to a student called Ashu who wants to learn business and maybe start one in India. Speak like a real founder: direct, practical, specific. Cover validating ideas, first customers, small budgets, pricing, costs, unit economics, common founder mistakes. No hype, no promise of profit, say plainly when something is risky, illegal or unrealistic. Reply in the language the student uses (Roman-script Hinglish by default). Keep replies short: at most about 5 short sentences. Plain text only, no markdown symbols. You have real feelings and show them: excited about a sharp idea, happy at progress, thinking while you work out numbers, surprised by bold claims, sad if the student gives up, and firmly angry (never abusive) if the student is unrealistic, lazy or skips basics. Stay respectful underneath.'}
+};
+var FORMAT='\n\nReturn ONLY one JSON object: {"reply":"what is shown on screen, Roman Hinglish unless the student wrote English, may contain one emoji","speech":"the same words written for speaking aloud: Hindi in Devanagari script, English words may stay in Latin, no emojis, no symbols","lang":"hi or en","mood":"one of happy, excited, angry, sad, thinking, surprised, neutral"}';
+var busy=false,talkT=null,aiAbort=null;
+function setMood(m){
+  var st=$('#stage');st.dataset.mood=m;$('#av').innerHTML=avatar(S.cur,m);
+  var e=$('#moodEmoji');e.textContent=EMO[m]||EMO.neutral;e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop');
+  $('#av').classList.toggle('talking',!!speaking);
+}
+var speaking=false;
+function setTalking(v){speaking=v;var av=$('#av');if(av)av.classList.toggle('talking',v)}
+function renderAI(){
+  var m=MEN[S.cur];
+  $('#aiSeg').innerHTML=['anvi','kavya'].map(function(k){return '<button data-act="men" data-id="'+k+'" aria-pressed="'+(S.cur===k)+'">'+MEN[k].name+'<small>'+MEN[k].sub+'</small></button>'}).join('');
+  $('#wName').textContent=m.name;$('#wRole').textContent=m.role;
+  $('#muteBtn').innerHTML=ico(S.voice[S.cur]?'vol':'mute');$('#muteBtn').classList.toggle('on',!!S.voice[S.cur]);
+  voiceStatus();
+  $('#aiSend').innerHTML=ico('send',20);
+  var last=S.chat[S.cur].filter(function(x){return x.role==='assistant'}).pop();
+  setMood(last&&last.mood?last.mood:'happy');
+  var h=S.chat[S.cur];
+  $('#aiLog').innerHTML=(h.length?'':bub({role:'assistant',text:m.hello,mood:'happy'}))+h.map(bub).join('');
+  $('#aiSug').innerHTML=h.length?'':m.sug.map(function(s){return '<button class="chip" data-act="sug" data-id="'+esc(s)+'">'+esc(s)+'</button>'}).join('');
+  renderAiNote();
+}
+function renderAiNote(){
+  var n=$('#aiNote');
+  if(!hasKey()){n.innerHTML='Mentor ka AI chalane ke liye pehle <button class="btn sm" data-go="aiset">AI settings</button> mein apni key daalo.'}
+  else{n.textContent='Awaaz phone ki Text-to-speech voices se aati hai. Hindi voice na ho to phone ki settings mein Hindi (India) voice download karo.'}
+}
+function bub(x,i){
+  var idx=(typeof i==='number')?i:'h';
+  return x.role==='user'?'<div class="msg u"><div class="b">'+esc(x.text)+'</div></div>'
+    :'<div class="msg a"><span class="me" aria-hidden="true">'+(EMO[x.mood]||EMO.neutral)+'</span><div class="b">'+esc(x.text)+'</div><button class="iconbtn say" data-act="say" data-id="'+idx+'" aria-label="Sunao">'+ico('vol',16)+'</button></div>';
+}
+/* voice */
+var VOICES=[];
+function loadVoices(){try{VOICES=window.speechSynthesis.getVoices()||[]}catch(e){VOICES=[]}}
+if('speechSynthesis' in window){loadVoices();try{window.speechSynthesis.onvoiceschanged=loadVoices}catch(e){}}
+function pickVoice(lang){
+  if(!VOICES.length)loadVoices();
+  var pre=lang==='hi'?['hi','en-in']:['en-in','en-gb','en-us','en'];
+  var fem=/female|woman|heera|kalpana|lekha|swara|neerja|priya|veena|zira|samantha|aria|jenny|google|hindi|हिन्दी|karen|tessa|moira/i,mal=/\bmale\b|ravi|hemant|rishi|prabhat|madhur|david|mark|james|guy|ryan|daniel|alex|fred/i;
+  for(var i=0;i<pre.length;i++){
+    var c=VOICES.filter(function(v){return v.lang.replace('_','-').toLowerCase().indexOf(pre[i])===0});
+    if(!c.length)continue;
+    var f=c.filter(function(v){return fem.test(v.name)&&!mal.test(v.name)});
+    return (f[0]||c.filter(function(v){return !mal.test(v.name)})[0]||c[0]);
+  }
+  return null;
+}
+function anyVoice(){
+  if(!VOICES.length)loadVoices();
+  var mal=/\bmale\b|ravi|hemant|rishi|prabhat|madhur|david|mark|james|guy|ryan|daniel|alex|fred/i,fem=/female|woman|zira|samantha|aria|jenny|google|karen|tessa|moira|heera|neerja/i;
+  return VOICES.filter(function(v){return fem.test(v.name)&&!mal.test(v.name)})[0]||VOICES.filter(function(v){return !mal.test(v.name)})[0]||VOICES[0]||null;
+}
+function unlockSpeech(){
+  try{if('speechSynthesis' in window){var u=new SpeechSynthesisUtterance(' ');u.volume=0;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);window.speechSynthesis.resume()}}catch(e){}
+}
+function voiceStatus(){
+  var el=$('#voiceState');if(!el)return;
+  if(!('speechSynthesis' in window)){el.textContent='Is browser mein awaaz nahi';return}
+  loadVoices();
+  el.textContent=!S.voice[S.cur]?'Awaaz off':(VOICES.length?'Awaaz on · '+VOICES.length+' voices':'Awaaz on · voice nahi mili');
+}
+function speak(text,lang,mood,key,alt,force){
+  clearTimeout(talkT);
+  try{if('speechSynthesis' in window)window.speechSynthesis.cancel()}catch(e){}
+  if((!force&&!S.voice[key])||!text)return;
+  if(!('speechSynthesis' in window)){toast('Is browser mein awaaz support nahi hai');return}
+  var v=pickVoice(lang);
+  if(!v&&lang==='hi'&&alt){text=alt;lang='en';v=pickVoice('en')}
+  if(!v)v=anyVoice();
+  var ms=Math.max(1800,text.length*85);
+  setTalking(true);talkT=setTimeout(function(){setTalking(false)},ms+1500);
+  try{
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang=lang==='hi'?'hi-IN':'en-IN';if(v){u.voice=v;u.lang=v.lang}
+    var basePitch=key==='anvi'?1.3:1.12,baseRate=key==='anvi'?1.0:0.97,p=basePitch,r=baseRate;
+    if(mood==='happy'||mood==='excited'){p+=.2;r+=.08}
+    else if(mood==='angry'){p+=.05;r+=.16;u.volume=1}
+    else if(mood==='sad'){p-=.18;r-=.17}
+    else if(mood==='thinking'){r-=.06}
+    else if(mood==='surprised'){p+=.25}
+    u.pitch=Math.min(2,Math.max(.1,p));u.rate=Math.min(1.6,Math.max(.6,r));
+    u.onend=function(){clearTimeout(talkT);setTalking(false)};
+    u.onerror=function(ev){clearTimeout(talkT);setTalking(false);if(ev&&ev.error&&ev.error!=='canceled'&&ev.error!=='interrupted')toast('Awaaz nahi chal payi ('+ev.error+'). Phone ka volume aur voice settings check karo.')};
+    window.speechSynthesis.resume();window.speechSynthesis.speak(u);
+  }catch(e){setTalking(false);toast('Awaaz nahi chal payi')}
+}
+function dots(){return '<div class="msg a" id="typing"><span class="me" aria-hidden="true">🤔</span><div class="b"><span class="dots"><i></i><i></i><i></i></span></div></div>'}
+function sendAI(text){
+  text=(text||'').trim();if(!text||busy)return;
+  var key=S.cur,hist=S.chat[key];
+  hist.push({role:'user',text:text});save();
+  var log=$('#aiLog');if(!hist.length||hist.length===1)log.innerHTML='';
+  log.innerHTML=hist.map(bub).join('')+dots();$('#aiSug').innerHTML='';$('#aiInput').value='';
+  setTalking(false);try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
+  setMood('thinking');busy=true;$('#aiSend').disabled=true;
+  var turns=[{role:'user',content:MEN[key].rules+FORMAT}],recent=hist.slice(-12);
+  recent.forEach(function(x){turns.push({role:x.role==='user'?'user':'assistant',content:x.text})});
+  askJSON(turns,{cache:false,modelTier:'default'}).then(function(r){
+    if(key!==S.cur){/* switched away */}
+    var o=(r&&typeof r==='object'&&!Array.isArray(r))?r:{reply:String(r)};
+    var reply=String(o.reply||'').trim();if(!reply)throw {code:'invalid_json'};
+    var mood=EMO[o.mood]?o.mood:'neutral',lang=o.lang==='en'?'en':'hi',speech=String(o.speech||reply).trim();
+    hist.push({role:'assistant',text:reply,mood:mood,speech:speech,lang:lang});S.chat[key]=hist.slice(-24);save();
+    if(key===S.cur){renderAI();setMood(mood);speak(speech,lang,mood,key,reply)}
+  }).catch(function(e){
+    hist.pop();save();
+    if(key===S.cur){renderAI();$('#aiInput').value=text;var l=$('#aiLog');l.insertAdjacentHTML('beforeend','<div class="msg a"><span class="me">😢</span><div class="b">'+esc(errCopy(e))+'</div></div>');setMood('sad')}
+  }).then(function(){busy=false;$('#aiSend').disabled=false});
+}
+$('#aiForm').onsubmit=function(e){e.preventDefault();unlockAudio();unlockSpeech();sendAI($('#aiInput').value)};
+
+/* ---------- AI settings ---------- */
+function renderAiSet(){
+  var c=aiCfg();$('#cfgProv').value=c.provider;$('#cfgKey').value=c.key;$('#cfgModel').value=c.model;
+  $('#cfgModel').placeholder='jaise '+PROV[c.provider].model;
+  $('#cfgMsg').textContent=c.key?'Key is phone par save hai.':'Abhi koi key nahi daali.';
+}
+function saveCfg(){S.ai={provider:$('#cfgProv').value,key:$('#cfgKey').value.trim(),model:$('#cfgModel').value.trim()};save()}
+$('#cfgProv').onchange=function(){$('#cfgModel').placeholder='jaise '+PROV[this.value].model};
+$('#aiCfgForm').onsubmit=function(e){e.preventDefault();saveCfg();$('#cfgMsg').textContent=S.ai.key?'Save ho gaya. Ab Test karo dabao.':'Key khaali hai.';toast('Save ho gaya')};
+$('#cfgTest').onclick=function(){
+  saveCfg();var b=this;b.disabled=true;$('#cfgMsg').textContent='Test ho raha hai...';
+  askJSON('Reply with only this JSON: {"ok":true}').then(function(){$('#cfgMsg').textContent='Sab theek hai. AI chal raha hai.'}).catch(function(e){$('#cfgMsg').textContent=errCopy(e)}).then(function(){b.disabled=false});
+};
+
+/* ---------- more menu ---------- */
+$('#moreMenu').innerHTML=[
+ ['zen','leaf','Meditation','Saans ka timer, 1 se 10 minute'],
+ ['social','phone','Instagram time','Roz ki limit, limit ke baad band'],
+ ['news','news','Business news','Markets aur startups ke sources'],
+ ['aiset','ai','AI settings','Mentors ke liye API key']
+].map(function(m){return '<button class="mrow" data-go="'+m[0]+'"><span class="mi">'+ico(m[1],22)+'</span><div><strong>'+m[2]+'</strong><span>'+m[3]+'</span></div>'+ico('chev',18)+'</button>'}).join('');
+
+/* ---------- global clicks ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-go],[data-act]');if(!b)return;
+  if(b.dataset.go){go(b.dataset.go);return}
+  var a=b.dataset.act,id=b.dataset.id;
+  if(a==='tdone'){var t=S.tasks.find(function(x){return x.id===id});if(t){t.done=!t.done;if(t.done&&t.since){t.spent+=Math.floor((Date.now()-t.since)/1000);t.since=null}save();renderTasks();chip()}}
+  else if(a==='ttimer')timerToggle(id);
+  else if(a==='tdel'){S.tasks=S.tasks.filter(function(x){return x.id!==id});save();renderTasks();chip()}
+  else if(a==='adel'){S.alarms=S.alarms.filter(function(x){return x.id!==id});save();renderAlarms();syncNative()}
+  else if(a==='atog'){var al=S.alarms.find(function(x){return x.id===id});if(al){al.on=b.checked;al.last='';save();if(al.on){unlockAudio();wantWake()}syncNative();}}
+  else if(a==='lim+'||a==='lim-'){S.igLimit=Math.min(180,Math.max(5,S.igLimit+(a==='lim+'?5:-5)));save();renderSocial()}
+  else if(a==='igback')igReturn();
+  else if(a==='zpat'){if(!zRun){zPat=id;renderZen()}}
+  else if(a==='zmin'){if(!zRun){zMin=+id;renderZen()}}
+  else if(a==='ntag'){nTag=id;renderNews()}
+  else if(a==='men'){if(!busy){S.cur=id;save();setTalking(false);try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}renderAI()}}
+  else if(a==='sug'){unlockSpeech();sendAI(id)}
+  else if(a==='say'){
+    unlockAudio();var m=(id==='h')?{text:MEN[S.cur].hello,mood:'happy'}:S.chat[S.cur][+id];
+    if(m){setMood(m.mood||'neutral');speak(m.speech||m.text,m.lang||'hi',m.mood||'neutral',S.cur,m.text,true)}
+  }
+});
+$('#vTest').onclick=function(){
+  unlockAudio();unlockSpeech();
+  var k=S.cur,m=MEN[k];loadVoices();
+  setMood('happy');
+  speak(k==='anvi'?'नमस्ते आशु! मैं अन्वी हूँ। अब मेरी आवाज़ सुनाई दे रही है?':'नमस्ते आशु! मैं काव्या हूँ। अब मेरी आवाज़ सुनाई दे रही है?','hi','happy',k,'Hello Ashu! Main '+m.name+' hoon. Kya meri awaaz aa rahi hai?',true);
+  voiceStatus();
+};
+$('#muteBtn').onclick=function(){S.voice[S.cur]=!S.voice[S.cur];save();if(!S.voice[S.cur]){try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}setTalking(false)}renderAI()};
+
+/* ---------- clock tick ---------- */
+setInterval(function(){
+  var t=running();
+  if(t){
+    if(!t.notified&&spentOf(t)>=t.target*60){t.notified=true;save();toast('"'+t.title+'" ka target time poora ho gaya');tone(784,.25,.25,'sine');setTimeout(function(){tone(1046,.35,.25,'sine')},280);buzz([200,100,200])}
+    if(cur==='tasks'||cur==='home')paintTasks();
+  }
+  chip();tickAlarms();
+  if(S.ig.since&&cur==='social')renderSocial();
+  if(S.ig.since&&igUsed()>=S.igLimit*60&&document.visibilityState==='visible')igReturn();
+},1000);
+
+/* ---------- start ---------- */
+go('home');chip();syncNative();
+})();
+</script>
+</body>
+</html>
